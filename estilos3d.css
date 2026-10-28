@@ -1,0 +1,75 @@
+/* Estilos de la simulación DBM 3D */
+:root {
+  color-scheme: dark;
+  --bg: #080c14;
+  --visor: #04070d;
+  --panel: #0e141f;
+  --linea: #1b2434;
+  --texto: #e7ecf5;
+  --suave: #8b97ab;
+  --acento: #78a6ff;
+  --acento2: #4f7be0;
+  --aviso: #f2b35c;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #101b30 0, var(--bg) 55%); color: var(--texto); font: 14px/1.5 Inter, "Segoe UI", system-ui, -apple-system, sans-serif; font-variant-numeric: tabular-nums; }
+.app { width: min(1500px, 100%); margin: 0 auto; padding: 22px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; }
+.encabezado { grid-column: 1 / -1; padding: 4px 2px 12px; }
+.encabezado h1 { margin: 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.04em; }
+.encabezado p { margin: 5px 0 0; color: var(--suave); }
+
+.visor { min-width: 0; position: sticky; top: 14px; align-self: start; height: clamp(560px, calc(100vh - 28px), 860px); overflow: hidden; min-height: 560px; border: 1px solid #2a3957; border-radius: 18px; background: var(--visor); box-shadow: 0 20px 70px #0007, inset 0 0 0 1px #ffffff08, 0 0 60px #3b5bd51f; }
+.marco { position: absolute; inset: 0; min-height: 560px; }
+#lienzo { display: block; width: 100%; height: 100%; touch-action: none; outline: none; cursor: grab; }
+#lienzo:active { cursor: grabbing; }
+.destello { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(ellipse at 50% 18%, #fff6d8 0, #ffc86a66 38%, #ff8a2a00 75%); }
+
+.hud { position: absolute; z-index: 2; padding: 8px 11px; border: 1px solid #28364c; border-radius: 9px; background: #080e19d9; color: #b9c8df; font-size: 12px; backdrop-filter: blur(8px); }
+.hud-sup { top: 14px; left: 14px; }
+.hud-ayuda { bottom: 14px; left: 14px; color: var(--suave); }
+.leyenda { top: 14px; right: 14px; display: grid; gap: 9px; min-width: 230px; }
+.leyenda canvas { display: block; width: 100%; height: 10px; margin-top: 6px; border-radius: 8px; }
+.marcas { display: flex; justify-content: space-between; color: var(--suave); font-size: 11px; }
+.clave { display: flex; align-items: center; gap: 9px; color: #d5dfef; }
+.clave i { flex: none; display: inline-block; width: 22px; height: 4px; border-radius: 3px; background: var(--c, #fff); box-shadow: 0 0 8px var(--c, #fff); }
+
+.lateral { display: grid; align-content: start; gap: 12px; min-width: 0; }
+.sec { padding: 17px; border: 1px solid var(--linea); border-radius: 15px; background: linear-gradient(145deg, #111a29, var(--panel)); box-shadow: 0 10px 30px #0002; }
+.sec h2 { margin: 0 0 13px; font-size: 15px; letter-spacing: .01em; }
+.sec p { margin: 10px 0 0; color: var(--suave); font-size: 12px; }
+.interruptor { display: flex; align-items: center; gap: 9px; margin: 10px 0; cursor: pointer; }
+.interruptor input[type="checkbox"] { accent-color: var(--acento); width: 16px; height: 16px; flex: none; }
+.interruptor input[type="color"] { margin-left: auto; flex: none; width: 30px; height: 22px; padding: 0; border: 1px solid #33445f; border-radius: 6px; background: #080e19; cursor: pointer; }
+.interruptor input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+.interruptor input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 4px; }
+.rango { margin: 14px 0; }
+.rango.sub { margin: 4px 0 12px 25px; }
+.rango label, .campo { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 7px; color: #d5dfef; }
+output { color: var(--acento); font-weight: 700; }
+input[type="range"] { width: 100%; accent-color: var(--acento); cursor: pointer; }
+.campo { display: grid; align-items: start; }
+input[type="number"] { width: 100%; padding: 9px 10px; border: 1px solid #2b3950; border-radius: 8px; background: #080e19; color: var(--texto); }
+.botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.boton { border: 1px solid #33445f; border-radius: 9px; padding: 10px 8px; background: #182337; color: var(--texto); font: inherit; cursor: pointer; transition: transform .15s, background .15s, border-color .15s; }
+.boton:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--acento); background: #20314c; }
+.boton:focus-visible, input:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.boton:disabled { opacity: .4; cursor: not-allowed; }
+.boton-primario { border-color: #6e9aff; background: linear-gradient(135deg, #4679e4, #6c65d8); color: white; }
+.boton-ancho { width: 100%; margin-top: 4px; }
+.progreso { height: 6px; margin-top: 15px; overflow: hidden; border-radius: 10px; background: #222d40; }
+#prog { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #4e83f5, #49dfd1); transition: width .15s; }
+.datos { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; margin: 0; }
+.datos dt { color: var(--suave); }
+.datos dd { margin: 0; max-width: 155px; text-align: right; overflow-wrap: anywhere; }
+.aviso { padding: 9px 10px; border: 1px solid #72532a; border-radius: 8px; background: #3a2a142e; color: var(--aviso) !important; }
+details summary { cursor: pointer; font-weight: 650; }
+.formulas { padding-left: 20px; }
+.formulas li { margin: 12px 0; }
+.formulas span { display: block; color: #dce7fa; font-weight: 700; }
+.formulas small { display: block; color: var(--suave); }
+@media (max-width: 1000px) { .app { grid-template-columns: minmax(0, 1fr); padding: 14px; } .encabezado, .visor, .lateral { grid-column: 1; } .visor { position: relative; top: auto; height: clamp(480px, 70vh, 700px); } .visor, .marco { min-height: 480px; } .lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .app { padding: 10px; gap: 10px; } .visor { height: clamp(390px, 62vh, 560px); } .visor, .marco { min-height: 390px; } .lateral { grid-template-columns: 1fr; } .hud-sup { max-width: 60%; } .leyenda { top: auto; bottom: 54px; left: 12px; right: 12px; min-width: 0; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } .destello { display: none; } }
