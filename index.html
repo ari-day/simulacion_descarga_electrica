@@ -9,83 +9,81 @@
 <body>
 <div class="app">
   <header class="encabezado">
-    <h1>Descarga eléctrica atmosférica</h1>
-    <p>Modelo de Ruptura Dieléctrica (DBM) en tres dimensiones</p>
+    <div class="enc-texto">
+      <h1>Simulación tridimensional de la ramificación de un rayo </span></h1>
+      <p>Modelo de Ruptura Dieléctrica (DBM) en tres dimensiones</p>
+    </div>
+    
   </header>
 
   <main class="visor">
     <div class="marco" id="marco"><canvas id="lienzo" role="img" aria-label="Descarga eléctrica tridimensional entre la nube y el suelo"></canvas></div>
     <div class="destello" id="destello"></div>
-    <div class="hud hud-sup" id="hudDominio"></div>
+    <button id="btnPantalla" class="hud hud-btn" type="button" aria-label="Pantalla completa" title="Pantalla completa (F)"></button>
+    <div class="hud barra-fs" id="barraFS">
+      <button id="fsPlay" class="boton boton-primario" type="button">Iniciar</button>
+      <button id="fsNuevo" class="boton" type="button">Nuevo rayo</button>
+      <div class="seg" role="group" aria-label="Velocidad de ejecución"></div>
+    </div>
     <div class="hud leyenda" id="leyenda" hidden>
       <div id="lgMapa" hidden><b>Potencial normalizado φ</b><canvas id="barra" width="220" height="10"></canvas>
         <div class="marcas"><span>0 nube</span><span>0.5</span><span>1 suelo</span></div></div>
       <div class="clave" id="lgEqui" hidden><i id="muEqui"></i>Superficies equipotenciales (Δφ = 0.1)</div>
+      <div class="clave" id="lgPuntas" hidden><i id="muPuntas"></i>Puntas activas: probabilidad p<sub>i</sub> de crecer</div>
       <div class="clave" id="lgCampo" hidden><i id="muCampo"></i>Líneas de campo E = −∇φ</div>
     </div>
   </main>
 
   <aside class="lateral">
+    <section class="sec sec-sim" aria-labelledby="t-sim">
+      <header class="sec-cab"><span class="sec-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><h2 id="t-sim">Simulación</h2>
+        <span class="estado" id="pillEstado" data-s="idle"><i></i><span id="dEstado">Listo</span></span></header>
+      <button id="btnIniciar" class="boton boton-primario boton-grande" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>Iniciar</button>
+      <div class="botones3">
+        <button id="btnPausar" class="boton boton-sec" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>Pausar</button>
+        <button id="btnPaso" class="boton boton-sec" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l9 7-9 7z" fill="currentColor"/><path d="M18 5v14"/></svg>Paso a paso</button>
+        <button id="btnReiniciar" class="boton boton-sec" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Nuevo rayo</button>
+      </div>
+      <div class="bloque">
+        <div class="fila-et"><span class="etq">Velocidad de ejecución</span><output id="velNombre">Normal</output></div>
+        <div class="seg" role="group" aria-label="Velocidad de ejecución"></div>
+      </div>
+      <div class="progreso" id="progreso" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="prog"></div></div>
+      <div class="chips">
+        <div class="chip"><span>Celdas</span><b id="dCeldas">1</b></div>
+        <div class="chip"><span>Puntas activas</span><b id="dPuntas">0</b></div>
+        <div class="chip ancho"><span>Semilla usada</span><b id="dSemilla">—</b></div>
+      </div>
+      <label class="campo-sem" for="campoSemilla"><span>Fijar semilla</span>
+        <input id="campoSemilla" type="number" min="0" step="1" placeholder="aleatoria"></label>
+    </section>
+
     <section class="sec" aria-labelledby="t-vis">
-      <h2 id="t-vis">Visualización</h2>
-      <label class="interruptor"><input type="checkbox" id="chkMapa"><span>Mapa de potencial en todo el volumen</span></label>
-      <div class="rango sub"><label for="sOpac">Opacidad del mapa <output id="vOpac">55 %</output></label>
+      <header class="sec-cab"><span class="sec-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><h2 id="t-vis">Visualización</h2></header>
+      <label class="fila"><input type="checkbox" id="chkMapa" class="sw"><span class="fila-t"><b>Mapa de potencial</b><small>Color de φ en todo el volumen</small></span></label>
+      <div class="rango sub"><label for="sOpac">Opacidad <output id="vOpac">55 %</output></label>
         <input id="sOpac" type="range" min="5" max="100" step="1" value="55"></div>
-      <label class="interruptor"><input type="checkbox" id="chkEqui"><span>Equipotenciales</span><input type="color" id="cEqui" value="#ff4fd8" aria-label="Color de las equipotenciales"></label>
-      <label class="interruptor"><input type="checkbox" id="chkCampo"><span>Líneas de campo eléctrico</span><input type="color" id="cCampo" value="#ffffff" aria-label="Color de las líneas de campo"></label>
-      <p>El mapa y las equipotenciales llenan todo el dominio: el color indica φ y se hace más opaco donde el campo se intensifica. Las líneas de campo se trazan en 3D desde el suelo.</p>
+      <label class="fila"><input type="checkbox" id="chkEqui" class="sw"><span class="fila-t"><b>Equipotenciales</b><small>Superficies de φ constante</small></span><input type="color" id="cEqui" value="#ff4fd8" aria-label="Color de las equipotenciales"></label>
+      <label class="fila"><input type="checkbox" id="chkCampo" class="sw"><span class="fila-t"><b>Líneas de campo</b><small>E = −∇φ, desde el suelo</small></span><input type="color" id="cCampo" value="#ffffff" aria-label="Color de las líneas de campo"></label>
+      <label class="fila"><input type="checkbox" id="chkPuntas" class="sw"><span class="fila-t"><b>Puntas activas</b><small>Sitios candidatos de crecimiento; más grande = más probable</small></span></label>
       <p id="avisoGL" class="aviso" hidden>Tu navegador no ofrece WebGL2: el mapa de potencial en volumen y las superficies equipotenciales no están disponibles.</p>
     </section>
 
-    <section class="sec" aria-labelledby="t-sim">
-      <h2 id="t-sim">Simulación</h2>
-      <div class="botones">
-        <button id="btnIniciar" class="boton boton-primario" type="button">Iniciar</button>
-        <button id="btnPausar" class="boton" type="button">Pausar</button>
-        <button id="btnPaso" class="boton" type="button">Paso a paso</button>
-        <button id="btnReiniciar" class="boton" type="button">Nuevo rayo</button>
-      </div>
-      <label class="campo" for="campoSemilla">Semilla (vacío = aleatoria)
-        <input id="campoSemilla" type="number" min="0" step="1" placeholder="aleatoria"></label>
-      <div class="progreso" id="progreso" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="prog"></div></div>
-    </section>
-
-    <section class="sec" aria-labelledby="t-est">
-      <h2 id="t-est">Estado</h2>
-      <dl class="datos">
-        <dt>Estado</dt><dd id="dEstado">Listo</dd>
-        <dt>Semilla</dt><dd id="dSemilla">—</dd>
-        <dt>Celdas del canal</dt><dd id="dCeldas">1</dd>
-        <dt>Distancia al suelo</dt><dd id="dDist">—</dd>
-      </dl>
-    </section>
-
     <section class="sec" aria-labelledby="t-par">
-      <h2 id="t-par">Parámetros</h2>
+      <header class="sec-cab"><span class="sec-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></span><h2 id="t-par">Parámetros</h2></header>
       <div class="rango"><label for="sliderEta">Exponente η <output id="valorEta">1.0</output></label>
         <input id="sliderEta" type="range" min="0.1" max="4" step="0.1" value="1"></div>
-      <p id="descripcionEta"></p>
+      <p id="descripcionEta" class="nota"></p>
+      <div class="sub-t">Atmósfera</div>
       <div class="rango"><label for="sT">Temperatura <output id="vT">20 °C</output></label><input id="sT" type="range" min="-20" max="50" step="1" value="20"></div>
       <div class="rango"><label for="sP">Presión <output id="vP">1013 hPa</output></label><input id="sP" type="range" min="800" max="1100" step="1" value="1013"></div>
       <div class="rango"><label for="sH">Humedad relativa <output id="vH">50 %</output></label><input id="sH" type="range" min="0" max="100" step="1" value="50"></div>
-      <dl class="datos" style="margin-top:14px">
-        <dt>Densidad del aire</dt><dd id="vRho">—</dd>
-        <dt>Campo crítico E<sub>crit</sub></dt><dd id="vEc">—</dd>
-      </dl>
+      <div class="chips dos">
+        <div class="chip"><span>Densidad del aire</span><b id="vRho">—</b></div>
+        <div class="chip"><span>E<sub>crit</sub></span><b id="vEc">—</b></div>
+      </div>
       <p id="aviso" class="aviso" hidden>El campo aplicado no supera E<sub>crit</sub>: no habrá ruptura.</p>
-      <p>Los cambios de atmósfera se aplican al crear un nuevo rayo.</p>
-    </section>
-
-    <section class="sec">
-      <details>
-        <summary>Modelo matemático</summary>
-        <ul class="formulas">
-          <li><span>∇²φ = 0</span><small>Potencial 3D (SOR, 7 puntos). Nube φ = 0, suelo φ = 1.</small></li>
-          <li><span>Pᵢ = wᵢ / Σⱼ wⱼ</span><small>wᵢ = (Eᵢ/E<sub>crit</sub> − 1)<sup>η</sup>, para Eᵢ &gt; E<sub>crit</sub> (Niemeyer et al., 1984).</small></li>
-          <li><span>E<sub>crit</sub> = E₀ · δ · kₕ</span><small>E₀ ≈ 3 MV/m; δ, densidad relativa del aire (Peek, 1929).</small></li>
-        </ul>
-        <p>Malla de 33³ celdas de 10 m y sobretensión de 1,3. La corrección de humedad es aproximada y exploratoria. Modelo numérico educativo.</p>
-      </details>
+      <p class="nota">Los cambios de atmósfera se aplican al crear un nuevo rayo.</p>
     </section>
   </aside>
 </div>
@@ -98,8 +96,6 @@
   const M = window.MotorDBM3D, K = M.constantes, $ = id => document.getElementById(id);
   const CFG = { nx: 33, ny: 33, nz: 33, tolerancia: 5e-4, maxCeldas: 1500, dxMetros: 10 };
   const sx = 10 / (CFG.nx - 1), sy = 10 / (CFG.ny - 1), sz = 10 / (CFG.nz - 1), SUB = 4;
-  const L_DOM = (CFG.nx - 1) * CFG.dxMetros, M_POR_U = L_DOM / 10;
-  $("hudDominio").textContent = `Dominio ${L_DOM} × ${L_DOM} × ${L_DOM} m · ${CFG.nx}³ celdas`;
 
   /* ---------- Escena ---------- */
   const canvas = $("lienzo"), marco = $("marco");
@@ -188,7 +184,7 @@
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: textura("190,215,255", 1), blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, color: colEn(c.y).lerp(blanco, 0.4), opacity: 0.85 }));
     s.position.copy(c); s.scale.set(0.8, 0.8, 1); s.renderOrder = 4; scene.add(s); });
 
-  // regla en metros: eje x (arista frontal) y eje vertical
+  // etiquetas de los electrodos
   function etiqueta(txt, ancho, color) {
     const c = document.createElement("canvas"); c.width = 512; c.height = 128; const q = c.getContext("2d");
     q.font = `600 64px Inter, "Segoe UI", system-ui, sans-serif`; q.textAlign = "center"; q.textBaseline = "middle";
@@ -196,12 +192,6 @@
     const t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearFilter;
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false, depthWrite: false, opacity: 0.9 }));
     s.scale.set(ancho, ancho / 4, 1); s.renderOrder = 6; scene.add(s); return s; }
-  const tk = [];
-  for (let i = 0; i <= 4; i++) { const u = i * 2.5, txt = Math.round(u * M_POR_U) + " m";
-    tk.push(u, 0, 10, u, 0, 10.35); etiqueta(txt, 2.1).position.set(u, 0, 10.95);
-    tk.push(0, u, 10, -0.35, u, 10); etiqueta(txt, 2.1).position.set(-1.45, u, 10); }
-  const gTk = new THREE.BufferGeometry(); gTk.setAttribute("position", new THREE.Float32BufferAttribute(tk, 3));
-  scene.add(new THREE.LineSegments(gTk, new THREE.LineBasicMaterial({ color: 0x9fbcff, transparent: true, opacity: 0.7 })));
   etiqueta("Nube (φ = 0)", 3.6, "#c7bcff").position.set(-2.4, 10.7, 5);
   etiqueta("Suelo (φ = 1)", 3.6, "#9fe3ff").position.set(-2.4, -0.7, 5);
 
@@ -249,7 +239,8 @@
     if (n > 1) {
       const d = new Float32Array(n).fill(1), main = new Uint8Array(n); for (let i = n - 1; i > 0; i--) d[cel[i].p] += d[i];
       let m = 0; cel.forEach((c, i) => { if (c.z < cel[m].z) m = i; }); for (let i = m; i >= 0; i = cel[i].p) main[i] = 1;
-      const W = i => 0.012 + 0.07 * Math.pow(d[i] / Math.max(n, 300), 0.8);
+      const gk = 1, prop = true;
+      const W = i => gk * (prop ? 0.012 + 0.07 * Math.pow(d[i] / Math.max(n, 300), 0.8) : 0.035);
       for (let i = 1; i < n; i++) { const P = arista(i), wp = W(cel[i].p), wi = W(i), t = Math.min(1, d[i] / 60);
         const col = main[i] ? C_TRONCO : _c.setRGB(1, 0.50 + 0.38 * t, 0.12 + 0.30 * t);
         for (let s = 0; s < SUB; s++) seg(j++, P[s], P[s + 1], wp + (wi - wp) * (s + 0.5) / SUB, col); }
@@ -414,8 +405,22 @@
     r.connect(lp); lp.connect(gr); gr.connect(master); gr.connect(eco); r.start(t, Math.random() * 2); r.stop(t + 4.7);
   }
 
+  /* ---------- Puntas activas: sitios candidatos con su probabilidad p_i ---------- */
+  const NPUN = 160, texPun = textura("255,255,255", 1), puntas = [];
+  for (let i = 0; i < NPUN; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: texPun, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); s.visible = false; s.renderOrder = 6; scene.add(s); puntas.push(s); }
+  function actualizarPuntas() {
+    for (const s of puntas) s.visible = false;
+    if (!$("chkPuntas").checked || !sim || !enCurso()) return;
+    const L = (sim.candidatas || []).filter(c => sim.tipo[c.k] === 0).sort((a, b) => b.pr - a.pr).slice(0, NPUN);
+    if (!L.length) return; const mx = L[0].pr;
+    L.forEach((c, i) => { const s = puntas[i], t = Math.sqrt(c.pr / mx), p = punto(c);
+      s.position.copy(p); s.scale.setScalar(0.14 + 0.62 * t); s.material.color.setRGB(0.10 + 0.22 * t, 0.50 + 0.26 * t, 0.34 + 0.12 * t); s.material.opacity = 0.22 + 0.48 * t; s.visible = true; });
+  }
+
   /* ---------- Simulación, controles y panel ---------- */
   const chk = { mapa: $("chkMapa"), equi: $("chkEqui"), campo: $("chkCampo") };
+  const VELS = [["Muy lenta", 3], ["Lenta", 10], ["Normal", 40], ["Rápida", 150], ["Muy rápida", 0]];   // celdas por segundo (0 = lo más rápido posible)
+  let velI = 2, acum = 0;
   let sim, corriendo = false, sucioR = true, sucioC = true, tCampo = 0, tImpacto = -1, tPrev = 0;
   const enCurso = () => sim.estado === "listo" || sim.estado === "creciendo";
   const TXT = { listo: "Listo", creciendo: "En crecimiento", electrodo_alcanzado: "Suelo alcanzado", limite: "Límite de crecimiento", sin_candidatas: "Sin candidatas válidas", error_convergencia: "Laplace no convergió", ruptura_no_iniciada: "Sin ruptura" };
@@ -427,7 +432,9 @@
     campo.visible = cam; campo.material.color.set($("cCampo").value);
     $("muEqui").style.setProperty("--c", $("cEqui").value); $("muCampo").style.setProperty("--c", $("cCampo").value);
     $("lgMapa").hidden = !mapa; $("lgEqui").hidden = !equi; $("lgCampo").hidden = !cam;
-    $("leyenda").hidden = !(mapa || equi || cam);
+    const pun = $("chkPuntas").checked; $("lgPuntas").hidden = !pun; $("muPuntas").style.setProperty("--c", "#2fae7c");
+    $("leyenda").hidden = !(mapa || equi || cam || pun);
+    sucioR = true;
     $("vOpac").textContent = $("sOpac").value + " %";
     tCampo = 0; sucioC = true;
   }
@@ -438,14 +445,17 @@
     $("aviso").hidden = K.U * K.E0 / a.campoCritico > 1;
   }
   function panel() {
-    const n = sim.cel.length, zmin = Math.min(...sim.cel.map(c => c.z));
+    const n = sim.cel.length;
     $("dEstado").textContent = sim.estado === "creciendo" && !corriendo ? "En pausa" : TXT[sim.estado];
-    $("dSemilla").textContent = sim.p.semilla; $("dCeldas").textContent = n; $("dDist").textContent = Math.max(zmin - 1, 0) * CFG.dxMetros + " m";
+    $("pillEstado").dataset.s = corriendo ? "run" : sim.estado === "electrodo_alcanzado" ? "ok" : enCurso() ? "idle" : "warn";
+    $("dSemilla").textContent = sim.p.semilla; $("dCeldas").textContent = n;
+    $("dPuntas").textContent = sim.candidatas ? new Set(sim.candidatas.map(c => c.p)).size : 0;
     const pc = Math.min(100, 100 * n / CFG.maxCeldas); $("prog").style.width = pc + "%"; $("progreso").setAttribute("aria-valuenow", pc.toFixed(0));
     const f = !enCurso(); $("btnIniciar").disabled = corriendo || f; $("btnPausar").disabled = !corriendo; $("btnPaso").disabled = corriendo || f;
+    $("fsPlay").textContent = corriendo ? "Pausar" : "Iniciar"; $("fsPlay").disabled = !corriendo && f;
   }
   function nueva() {
-    corriendo = false; tImpacto = -1; pos = []; aristas = []; brilloSuelo.visible = false; brilloSuelo.material.opacity = 0; chispas.visible = false; arcoN.count = arcoH.count = 0;
+    corriendo = false; acum = 0; tImpacto = -1; pos = []; aristas = []; brilloSuelo.visible = false; brilloSuelo.material.opacity = 0; chispas.visible = false; arcoN.count = arcoH.count = 0;
     const t = $("campoSemilla").value.trim(), semilla = t !== "" && Number.isInteger(+t) && +t >= 0 ? +t : Math.floor(Math.random() * 4294967296);
     sim = M.crear({ ...CFG, eta: +$("sliderEta").value, temperaturaC: +$("sT").value, presionHpa: +$("sP").value, humedadRelativa: +$("sH").value, semilla });
     pos[0] = punto(sim.cel[0]); if (!M.laplace(sim)) sim.estado = "error_convergencia";
@@ -468,8 +478,11 @@
 
   function bucle(t) {
     const dtf = Math.min(0.05, Math.max(0, (t - tPrev) / 1000)); tPrev = t;
-    if (corriendo) { const t0 = performance.now(); do avanzar(); while (enCurso() && performance.now() - t0 < 12); panel(); }
-    if (sucioR) { reconstruir(); sucioR = false; }
+    if (corriendo) { const t0 = performance.now(), r = VELS[velI][1];
+      if (r === 0) { do avanzar(); while (enCurso() && performance.now() - t0 < 12); }
+      else { acum += dtf * r; while (acum >= 1 && enCurso() && performance.now() - t0 < 12) { avanzar(); acum--; } if (acum > 3) acum = 3; }
+      panel(); }
+    if (sucioR) { reconstruir(); actualizarPuntas(); sucioR = false; }
     if (sucioC && t - tCampo > 120) { tCampo = t; sucioC = false; actualizarPotencial(); }
 
     let f = 0, g = 0, dt = -1;
@@ -503,8 +516,41 @@
   $("btnReiniciar").onclick = () => { prepararAudio(); nueva(); };
   $("sliderEta").oninput = () => { const e = +$("sliderEta").value; $("valorEta").textContent = e.toFixed(1); $("descripcionEta").textContent = desc(e); if (sim) sim.p.eta = e; };
   ["sT", "sP", "sH"].forEach(id => $(id).addEventListener("input", lecturas));
-  [chk.mapa, chk.equi, chk.campo, $("sOpac"), $("cEqui"), $("cCampo")].forEach(el => el.addEventListener("input", capas));
+  [chk.mapa, chk.equi, chk.campo, $("sOpac"), $("cEqui"), $("cCampo"), $("chkPuntas")].forEach(el => el.addEventListener("input", capas));
   if (!WEBGL2) { chk.mapa.disabled = true; $("sOpac").disabled = true; $("avisoGL").hidden = false; }
+  $("fsPlay").onclick = () => $(corriendo ? "btnPausar" : "btnIniciar").click();
+  $("fsNuevo").onclick = () => $("btnReiniciar").click();
+
+  function setVel(i) { velI = i; acum = 0; $("velNombre").textContent = VELS[i][0]; document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === i)); }
+  document.querySelectorAll(".seg").forEach(g => VELS.forEach(([n], i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = n; b.dataset.i = i; b.onclick = () => setVel(i); g.appendChild(b); }));
+  setVel(velI);
+  const pintar = el => el.style.setProperty("--p", ((el.value - el.min) / (el.max - el.min) * 100) + "%");
+  document.querySelectorAll('input[type="range"]').forEach(el => { pintar(el); el.addEventListener("input", () => pintar(el)); });
+
+  /* ---------- Pantalla completa del visor ---------- */
+  const visor = document.querySelector(".visor"), btnP = $("btnPantalla");
+  const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  const ICO_EXP = ico("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"), ICO_COMP = ico("M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5");
+  const nativo = !!(visor.requestFullscreen || visor.webkitRequestFullscreen);
+  const esFS = () => document.fullscreenElement === visor || document.webkitFullscreenElement === visor || visor.classList.contains("pseudo");
+  function actualizarFS() {
+    const on = esFS(); visor.classList.toggle("expandido", on); btnP.innerHTML = on ? ICO_COMP : ICO_EXP;
+    const t = on ? "Salir de pantalla completa" : "Pantalla completa (F)"; btnP.title = t; btnP.setAttribute("aria-label", t);
+  }
+  function alternarFS() {
+    if (esFS()) {
+      if (visor.classList.contains("pseudo")) visor.classList.remove("pseudo"); else (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      actualizarFS(); return; }
+    if (nativo) { const p = (visor.requestFullscreen || visor.webkitRequestFullscreen).call(visor); if (p && p.catch) p.catch(() => { visor.classList.add("pseudo"); actualizarFS(); }); }
+    else { visor.classList.add("pseudo"); actualizarFS(); }
+  }
+  btnP.onclick = alternarFS;
+  document.addEventListener("fullscreenchange", actualizarFS); document.addEventListener("webkitfullscreenchange", actualizarFS);
+  addEventListener("keydown", e => {
+    if (e.key === "Escape" && visor.classList.contains("pseudo")) alternarFS();
+    else if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) alternarFS(); });
+  actualizarFS();
+
   $("descripcionEta").textContent = desc(1);
   lecturas(); capas(); orbita(); nueva(); requestAnimationFrame(bucle);
 })();
