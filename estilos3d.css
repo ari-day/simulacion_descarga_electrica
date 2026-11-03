@@ -73,3 +73,22 @@ details summary { cursor: pointer; font-weight: 650; }
 @media (max-width: 1000px) { .app { grid-template-columns: minmax(0, 1fr); padding: 14px; } .encabezado, .visor, .lateral { grid-column: 1; } .visor { position: relative; top: auto; height: clamp(480px, 70vh, 700px); } .visor, .marco { min-height: 480px; } .lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 620px) { .app { padding: 10px; gap: 10px; } .visor { height: clamp(390px, 62vh, 560px); } .visor, .marco { min-height: 390px; } .lateral { grid-template-columns: 1fr; } .hud-sup { max-width: 60%; } .leyenda { top: auto; bottom: 54px; left: 12px; right: 12px; min-width: 0; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .destello { display: none; } }
+/* ---- Mejoras de interfaz ---- */
+.hud-sup { min-width: 210px; }
+.datos.mini { gap: 3px 14px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #28364c; font-size: 12px; }
+.datos.mini dd { color: #e7ecf5; font-weight: 600; }
+.barra { position: absolute; z-index: 3; left: 14px; right: 14px; bottom: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; border: 1px solid #28364c; border-radius: 12px; background: #080e19e6; backdrop-filter: blur(10px); }
+.barra .grupo { display: flex; flex-wrap: wrap; gap: 6px; }
+.barra .vista { margin-left: auto; }
+.barra .boton { padding: 8px 14px; }
+.barra .icono { display: grid; place-items: center; width: 38px; height: 36px; padding: 0; }
+.barra .boton[aria-pressed="true"] { border-color: var(--acento); background: #24406f; color: #fff; }
+.barra .progreso { flex: 1 1 100%; height: 4px; margin: 2px 2px 0; }
+.pista { position: absolute; z-index: 2; left: 50%; bottom: 88px; transform: translateX(-50%); padding: 6px 12px; border-radius: 20px; background: #080e19cc; color: var(--suave); font-size: 12px; pointer-events: none; white-space: nowrap; animation: pista-fuera .6s ease 7s forwards; }
+@keyframes pista-fuera { to { opacity: 0; visibility: hidden; } }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 4px; }
+.chip { padding: 5px 11px; border: 1px solid #33445f; border-radius: 20px; background: #131d2f; color: #d5dfef; font: inherit; font-size: 12px; cursor: pointer; transition: border-color .15s, background .15s; }
+.chip:hover { border-color: var(--acento); background: #1b2a45; }
+.chip:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.visor:fullscreen { height: 100vh; border: 0; border-radius: 0; }
+@media (max-width: 620px) { .leyenda { top: auto; bottom: 132px; } .pista { display: none; } .barra { left: 8px; right: 8px; bottom: 8px; } .barra .vista { margin-left: 0; } }
